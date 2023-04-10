@@ -1,56 +1,107 @@
+"""
+Calculator module.
+
+This module calculates sum and square of sum.
+
+Available classes:
+class Calculator:
+    Performs calculations with given arguments.
+    Calculator class has a class variable named power for power.
+
+Available functions within Calculator class:
+__init__(self, *args) -> None: 
+    Initialises Calculator class.
+    Every calculator has unknown amount of arguments.
+validate_arguments(self) -> None:
+    Converts arguments into float type.
+    Removes spaces, converts commas into dots and removes duplicate dots.
+    Strings are converted into floats with value of 0.
+calculate_sum(self) -> float:
+    Calculates sum of arguments passed to Calculator object.
+calculate_square_of_sum(self) -> float:
+    Calculates square of sum for arguments passed to Calculator object.
+
+"""
+
 import math
+from decimal import Decimal
 
 
 class Calculator:
     """
     Calculator class.
 
-    Calculate sum of the arguments.
+    Performs calculations with given arguments.
     """
     power = 2
 
-    def __init__(self, arg_a, arg_b) -> float:
+    def __init__(self, *args) -> None:
         """
         Initialize the Calculator class.
 
         Calculator has two input arguments and two calculated properties.
         """
-        self.arg_a = arg_a
-        self.arg_b = arg_b
-        self.sum_of_args = 0
-        self.square_of_sum = 0
-    
-    def validate_arguments(self):
-        """
-        Check whether the arguments are correct type and convert them if needed.
+        self.args = args or (0, 0)
 
-        Arguments other than type of integer or float are converted into floats with the value of 0.
-        Floats and integers are converted into floats
+    def validate_arguments(self) -> None:
         """
-        if not (isinstance(self.arg_a, float) or isinstance(self.arg_a, int)):
-            self.arg_a = float(0)
-        else:
-            self.arg_a = float(self.arg_a)
-        if not (isinstance(self.arg_b, float) or isinstance(self.arg_b, int)):
-            self.arg_b = float(0)
-        else:
-            self.arg_b = float(self.arg_b)
-        
-    def calculate_sum(self):
+        Convert arguments into floats.
+
+        Arguments which can not be cast into floats will become zero-value
+        floats, other arguments will be converted into floats.
+        """
+
+        valid_args = (list(self.args)).copy()
+
+        # Clean the arguments.
+        for index in range(len(self.args)):
+            if isinstance(valid_args[index], str):
+                valid_args[index] = (valid_args[index]).strip()
+                valid_args[index] = (valid_args[index]).replace(",", ".")
+                valid_args[index] = (valid_args[index]).replace(" ", "")
+                if (valid_args[index]).count(".") > 1:
+                    cleaned_string = (valid_args[index]).partition(".")
+                    cleaned_string = list(cleaned_string)
+                    cleaned_string[2] = (cleaned_string[2]).strip(".")
+                    valid_args[index] = "".join(cleaned_string)
+
+        # Convert arguments into floats.
+        for index in range(len(self.args)):
+            if isinstance(valid_args[index], str):
+                split_string = (valid_args[index]).split(".")
+                for part in split_string:
+                    if not part.isdecimal():
+                        valid_args[index] = float(0)
+                        break
+                else:
+                    valid_args[index] = float(valid_args[index])
+            else:
+                valid_args[index] = float(valid_args[index])
+
+        self.args = tuple(valid_args)
+
+    def calculate_sum(self) -> float:
+        """
+        Calculate the sum of given arguments.
+
+        Calls the validation function and then calculates the sum of
+        given arguments.
+        """
         self.validate_arguments()
-        self.sum_of_args = sum((self.arg_a, self.arg_b))
-        return self.sum_of_args
-    
-    def calculate_square_of_sum(self):
-        self.calculate_sum()
-        self.square_of_sum = math.pow(self.sum_of_args, self.power)
-        return self.square_of_sum
+        sum_of_args = sum(self.args)
+        return sum_of_args
+
+    def calculate_square_of_sum(self) -> float:
+        """
+        Calculate square of sum of given arguments.
+
+        Calls the sum calculation function and then calculates the square
+        of the sum.
+        """
+        sum_of_args = self.calculate_sum()
+        square_of_sum = format(Decimal.from_float(math.pow(sum_of_args, self.power)), '.10')
+        return square_of_sum
 
 
 if __name__ == "__main__":
-    calculator1 = Calculator(1, 8)
-    calculator2 = Calculator(1.1, 8.8)
-    print(calculator1.calculate_sum())
-    print(calculator2.calculate_sum())
-    print(calculator1.calculate_square_of_sum())
-    print(calculator2.calculate_square_of_sum())
+    pass
