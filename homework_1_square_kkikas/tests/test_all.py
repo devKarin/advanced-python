@@ -1,13 +1,25 @@
+"""
+Main test module for square sum calculator with user interface.
+
+
+"""
+
 import unittest
 from square_kkikas.tests.test_calculator import CalculatorTest
 
+
 class ApplicationTest(unittest.TestCase):
     """
-    CApplicationTest class.
+    ApplicationTest class.
 
     A class for test cases testing main application functions.
     """
+
     def test_first(self):
+        """
+        Test for user interface.
+        """
+
         print("first test run")
 
 
