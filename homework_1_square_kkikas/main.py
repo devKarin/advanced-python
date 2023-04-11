@@ -40,7 +40,7 @@ def graphical_user_interface():
 #     raw_input_b = input("Insert argument b: ")
 #
 #     calculator = Calculator(raw_input_a, raw_input_b)
-#     output = calculator.calculate_square_of_sum()
+#     output = round(calculator.calculate_square_of_sum(), 10)
 #     print(f"(a + b)\u00B2 = {output}\n")
 #     print("The output is rounded to the precision of 10 decimal points")
 #     print("To quit, press Ctrl + C\n")
