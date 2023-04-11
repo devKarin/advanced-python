@@ -18,8 +18,9 @@ validate_arguments(self) -> None:
     Strings are converted into floats with value of 0.
 calculate_sum(self) -> float:
     Calculates sum of arguments passed to Calculator object.
-calculate_square_of_sum(self) -> float:
+calculate_square_of_sum(self) -> str:
     Calculates square of sum for arguments passed to Calculator object.
+    Returns formated decimal.
 
 """
 
