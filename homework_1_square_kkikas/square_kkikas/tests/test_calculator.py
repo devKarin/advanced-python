@@ -85,7 +85,6 @@ test_square_empty(self):
 
 
 import unittest
-from decimal import Decimal
 from square_kkikas.src.square_kkikas.calculator import Calculator
 
 
@@ -365,9 +364,11 @@ class CalculatorTest(unittest.TestCase):
                          '0.04', "Should be 0.04")
         calculator = Calculator(-0.222478, -2.02, -8.5911, -0.000401)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(117.375100972441, '.10'), f"Should be {format(117.375100972441, '.10')}")
+                         format(117.375100972441, '.10'),
+                         f"Should be {format(117.375100972441, '.10')}")
 
-    @unittest.skip("Failing due to limitations of floating point arithmetic.")
+    @unittest.skip("Failing due to limitations \
+                   of floating point arithmetic.")
     def test_square_big_positive_integer(self):
         """
         Test whether the square of sum is calculated correctly in case of
@@ -402,7 +403,8 @@ class CalculatorTest(unittest.TestCase):
                          f"Should be {format(15305532412694329.4566440121, '.10')}")
         calculator = Calculator(222.478, 200.02, 85000.911, 401.000001)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(7365829180.370929818001, '.10'), f"Should be {format(7365829180.370929818001, '.10')}")
+                         format(7365829180.370929818001, '.10'),
+                         f"Should be {format(7365829180.370929818001, '.10')}")
 
     def test_square_big_negative_float(self):
         """
@@ -415,7 +417,8 @@ class CalculatorTest(unittest.TestCase):
                          f"Should be {format(15305532412694329.456644, '.10')}")
         calculator = Calculator(-222.478, -200.02, -85000.911, -401.000001)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(7365829180.370929818001, '.10'), f"Should be {format(7365829180.370929818001, '.10')}")
+                         format(7365829180.370929818001, '.10'),
+                         f"Should be {format(7365829180.370929818001, '.10')}")
 
     def test_square_small_positive_float(self):
         """
