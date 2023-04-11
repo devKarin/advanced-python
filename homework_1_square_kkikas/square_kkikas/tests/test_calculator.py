@@ -316,13 +316,13 @@ class CalculatorTest(unittest.TestCase):
 
         calculator = Calculator(1, 0)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '1.0', "Should be 1.0")
+                         1.0, "Should be 1.0")
         calculator = Calculator(9, 4, 10, 2)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '625.0', "Should be 625.0")
+                         625.0, "Should be 625.0")
         calculator = Calculator(2, 3)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '25.0', "Should be 25.0")
+                         25.0, "Should be 25.0")
 
     def test_square_negative_integer(self):
         """
@@ -332,13 +332,13 @@ class CalculatorTest(unittest.TestCase):
 
         calculator = Calculator(-1, 0)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '1.0', "Should be 1.0")
+                         1.0, "Should be 1.0")
         calculator = Calculator(-1, -4, -2, -3)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '100.0', "Should be 100.0")
+                         100.0, "Should be 100.0")
         calculator = Calculator(-4, -2)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '36.0', "Should be 36.0")
+                         36.0, "Should be 36.0")
 
     def test_square_positive_float(self):
         """
@@ -347,11 +347,11 @@ class CalculatorTest(unittest.TestCase):
         """
 
         calculator = Calculator(0.1, 0.02)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         '0.0144', "Should be 0.0144")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 4),
+                         0.0144, "Should be 0.0144")
         calculator = Calculator(0.2, 0.02, 0.02, 0.01)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '0.0625', "Should be 0.0625")
+                         0.0625, "Should be 0.0625")
 
     def test_square_negative_float(self):
         """
@@ -360,37 +360,34 @@ class CalculatorTest(unittest.TestCase):
         """
 
         calculator = Calculator(-0.11, -0.09)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         '0.04', "Should be 0.04")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 4),
+                         0.04, "Should be 0.04")
         calculator = Calculator(-0.222478, -2.02, -8.5911, -0.000401)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(117.375100972441, '.10'),
-                         f"Should be {format(117.375100972441, '.10')}")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 12),
+                         117.375100972441,
+                         "Should be 117.375100972441")
 
-    @unittest.skip("Failing due to limitations \
-                   of floating point arithmetic.")
     def test_square_big_positive_integer(self):
         """
         Test whether the square of sum is calculated correctly in case of
         arguments of the calculator being big positive integers.
         """
         calculator = Calculator(446461548, 0)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         '199327913842556304', "Should be 199327913842556304")
+        self.assertAlmostEqual(round(calculator.calculate_square_of_sum(), -2),
+                               199327913842556304, 12, "Should be 199327913842556304")
         calculator = Calculator(
             4545151, 65542, 1254)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         '21270055130809', "Should be 21270055130809")
+        self.assertEqual(calculator.calculate_square_of_sum().as_integer_ratio(),
+                         float(21270055130809).as_integer_ratio(), "Should be 21270055130809")
 
-    @unittest.skip("Failing due to limitations of floating point arithmetic.")
     def test_square_big_negative_integer(self):
         """
         Test whether the square of sum is calculated correctly in case of
         arguments of the calculator being big negative integers.
         """
         calculator = Calculator(-422431541, -98412, -123456)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         '178635904139321281', "Should be 178635904139321281")
+        self.assertEqual(calculator.calculate_square_of_sum().as_integer_ratio(), 
+                         float(178635904139321281).as_integer_ratio(), "Should be 178635904139321281")
 
     def test_square_big_positive_float(self):
         """
@@ -398,13 +395,13 @@ class CalculatorTest(unittest.TestCase):
         arguments of the calculator being big positive floats.
         """
         calculator = Calculator(123456789.11, 258741.09011)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(15305532412694329.4566440121, '.10'),
-                         f"Should be {format(15305532412694329.4566440121, '.10')}")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 10),
+                         15305532412694329.4566440121,
+                         "Should be 15305532412694329.4566440121")
         calculator = Calculator(222.478, 200.02, 85000.911, 401.000001)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(7365829180.370929818001, '.10'),
-                         f"Should be {format(7365829180.370929818001, '.10')}")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 5),
+                         7365829180.370929818001,
+                         "Should be 7365829180.370929818001")
 
     def test_square_big_negative_float(self):
         """
@@ -413,12 +410,12 @@ class CalculatorTest(unittest.TestCase):
         """
         calculator = Calculator(-123456789.11, -258741.09011)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(15305532412694329.456644, '.10'),
-                         f"Should be {format(15305532412694329.456644, '.10')}")
+                         15305532412694329.456644,
+                         "Should be 15305532412694329.456644")
         calculator = Calculator(-222.478, -200.02, -85000.911, -401.000001)
-        self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(7365829180.370929818001, '.10'),
-                         f"Should be {format(7365829180.370929818001, '.10')}")
+        self.assertEqual(round(calculator.calculate_square_of_sum(), 5),
+                         7365829180.370929818001,
+                         "Should be 7365829180.370929818001")
 
     def test_square_small_positive_float(self):
         """
@@ -427,15 +424,15 @@ class CalculatorTest(unittest.TestCase):
         """
         calculator = Calculator(0.00012345678911, 0.0000000251)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(0.0000000152477769381743365921, '.10'),
-                         f"Should be {format(0.0000000152477769381743365921, '.10')}")
+                         0.0000000152477769381743365921,
+                         "Should be 0.0000000152477769381743365921")
         calculator = Calculator(0.0000000000222,
                                 0.0000002002,
                                 0.0000085,
                                 0.0000004)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(0.00000000008281404408937284, '.10'),
-                         f"Should be {format(0.00000000008281404408937284, '.10')}")
+                         0.00000000008281404408937284,
+                         "Should be 0.0000000000828140440893728")
 
     def test_square_small_negative_float(self):
         """
@@ -444,15 +441,15 @@ class CalculatorTest(unittest.TestCase):
         """
         calculator = Calculator(-0.00012345678911, -0.0000000251)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(0.0000000152477769381743365921, '.10'),
-                         f"Should be {format(0.0000000152477769381743365921, '.10')}")
+                         0.0000000152477769381743365921,
+                         "Should be 0.0000000152477769381743365921")
         calculator = Calculator(-0.0000000000222,
                                 -0.0000002002,
                                 -0.0000085,
                                 -0.0000004)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         format(0.00000000008281404408937284, '.10'),
-                         f"Should be {format(0.00000000008281404408937284, '.10')}")
+                         0.00000000008281404408937284,
+                         "Should be 0.00000000008281404408937284")
 
     def test_square_zero(self):
         """
@@ -461,7 +458,7 @@ class CalculatorTest(unittest.TestCase):
         """
         calculator = Calculator(0, 0, 0, 0)
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '0.0', "Should be 0.0")
+                         0.0, "Should be 0.0")
 
     def test_square_empty(self):
         """
@@ -471,7 +468,7 @@ class CalculatorTest(unittest.TestCase):
 
         calculator = Calculator()
         self.assertEqual(calculator.calculate_square_of_sum(),
-                         '0.0', "Should be 0.0")
+                         0.0, "Should be 0.0")
 
 
 if __name__ == "__main__":

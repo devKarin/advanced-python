@@ -18,9 +18,9 @@ validate_arguments(self) -> None:
     Strings are converted into floats with value of 0.
 calculate_sum(self) -> float:
     Calculates sum of arguments passed to Calculator object.
-calculate_square_of_sum(self) -> str:
+calculate_square_of_sum(self) -> float:
     Calculates square of sum for arguments passed to Calculator object.
-    Returns formated decimal.
+    Returns a floating point number without rounding.
 
 """
 
@@ -92,7 +92,7 @@ class Calculator:
         sum_of_args = sum(self.args)
         return sum_of_args
 
-    def calculate_square_of_sum(self) -> str:
+    def calculate_square_of_sum(self) -> float:
         """
         Calculate square of sum of given arguments.
 
@@ -100,7 +100,7 @@ class Calculator:
         of the sum.
         """
         sum_of_args = self.calculate_sum()
-        square_of_sum = format(math.pow(Decimal.from_float(sum_of_args), self.power), '.10')
+        square_of_sum = math.pow(Decimal.from_float(sum_of_args), self.power)
         return square_of_sum
 
 
