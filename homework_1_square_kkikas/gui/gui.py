@@ -108,7 +108,7 @@ class Gui:
 
         Calculation function gets the user input and passes them to
         the calculator instance, calls the function which calculates
-        the quare of sum of given arguments, configures the output message
+        the square of sum of given arguments, configures the output message
         and outputs the result of calculation, clears the input fields
         and sets the focus to the first of them.
         """
@@ -116,7 +116,7 @@ class Gui:
         arg2 = self.arg_b.get()
 
         calculator = Calculator(arg1, arg2)
-        result = calculator.calculate_square_of_sum()
+        result = round(calculator.calculate_square_of_sum(), 10)
         self.output.configure(
             text=f"({arg1 or 0} + {arg2 or 0})\u00B2 = {result}")
         self.output.grid(column=5, row=0, padx=15, pady=5)
