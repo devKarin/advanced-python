@@ -5,10 +5,11 @@ Main module which chooses and starts user interface for
 square of sum calculator.
 
 """
+# Uncomment following line to use terminal-based user interface.
+from square_kkikas.calculator import Calculator
+
 # Comment following line out to use terminal-based user interface.
 from gui.gui import Gui
-# Uncomment following line to use terminal-based user interface.
-from square_kkikas.src.square_kkikas.calculator import Calculator
 
 
 # Comment following function out to use terminal-based user interface.

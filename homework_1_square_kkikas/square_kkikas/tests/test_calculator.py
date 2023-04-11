@@ -85,7 +85,7 @@ test_square_empty(self):
 
 
 import unittest
-from square_kkikas.src.square_kkikas.calculator import Calculator
+from square_kkikas.calculator import Calculator
 
 
 class CalculatorTest(unittest.TestCase):

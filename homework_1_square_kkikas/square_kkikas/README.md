@@ -30,7 +30,7 @@ To use the `Calculator`, import it, instanciate it and call either `calculate_su
 
 ```python
 
-from square_kkikas import Calculator  # Import
+from square_kkikas.calculator import Calculator  # Import
 
 calculator = Calculator(4, 5)  # Instanciate
 square_of_sum = calculator.calculate_square_of_sum()  # Calculate square of sum. Returns 81.0 as a string.

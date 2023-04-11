@@ -7,7 +7,7 @@ calculating square of sum of two arguments.
 """
 
 import tkinter
-from square_kkikas.src.square_kkikas.calculator import Calculator
+from square_kkikas.calculator import Calculator
 
 
 class Gui:

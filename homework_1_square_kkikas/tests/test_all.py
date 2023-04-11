@@ -19,8 +19,8 @@ class ApplicationTest(unittest.TestCase):
         """
         Test for user interface.
         """
-
         print("first test run")
+        self.assertEqual(0, 0, "Should be 0")
 
 
 if __name__ == "__main__":
