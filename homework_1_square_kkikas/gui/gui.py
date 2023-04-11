@@ -29,19 +29,29 @@ class Gui:
         """
         self.window = tkinter.Tk()
         self.title = self.window.title("Square calculator")
-        self.arg_a = tkinter.Entry(self.window, width=5, bg="#87CEFA")
-        self.arg_b = tkinter.Entry(self.window, width=5, bg="#87CEFA")
+        self.arg_a = tkinter.Entry(self.window, width=5, bg="#87CEFA", font=("Arial", 15))
+        self.arg_b = tkinter.Entry(self.window, width=5, bg="#87CEFA", font=("Arial", 15))
         self.output = tkinter.Message(
-            self.window, fg="#87CEFA", bg="#00008B", text="", width=120)
+            self.window, fg="#87CEFA", bg="#00008B", text="", width=300, font=("Arial", 15))
         self.calculator_button = tkinter.Button(self.window,
                                                 text="Calculate (a + b)\u00B2",
                                                 bg="lightblue",
                                                 fg="#00008B",
+                                                font=("Arial", 15),
                                                 command=self.calculate)
         self.close_button = tkinter.Button(
-            self.window, text="Close", bg="#FFC0CB", fg="#0000CD", command=self.window.quit)
+            self.window,
+            text="Close",
+            bg="#FFC0CB",
+            fg="#0000CD",
+            font=("Arial", 15),
+            command=self.window.quit)
         self.information = tkinter.Message(
-            self.window, fg="#87CEFA", bg="#FFB6C1", text="The output is rounded to the precision of 10 decimal points", width=420)
+            self.window,
+            fg="#00008B",
+            bg="#FFB6C1",
+            font=("Arial", 15),
+            text="The output is rounded to the precision of 10 decimal points", width=420)
 
         self.window.config(bg="#B0C4DE")
         self.window.resizable(width=True, height=True)
@@ -52,13 +62,27 @@ class Gui:
 
         Creates two input fields and their labels for user input.
         """
-        tkinter.Label(self.window, text="a", bg="#B0C4DE").grid(
-            column=0, row=0, padx=15, pady=5)
+        tkinter.Label(self.window,
+                      text="a",
+                      bg="#B0C4DE",
+                      font=("Arial", 15)
+                      ).grid(
+            column=0,
+            row=0,
+            padx=15,
+            pady=5)
         self.arg_a.grid(column=1, row=0, padx=15, pady=5)
         self.arg_a.focus()
 
-        tkinter.Label(self.window, text="b", bg="#B0C4DE").grid(
-            column=2, row=0, padx=15, pady=5)
+        tkinter.Label(self.window,
+                      text="b",
+                      bg="#B0C4DE",
+                      font=("Arial", 15)
+                      ).grid(
+            column=2,
+            row=0,
+            padx=15,
+            pady=5)
         self.arg_b.grid(column=3, row=0, padx=15, pady=5)
 
     def create_calculator_button(self):
