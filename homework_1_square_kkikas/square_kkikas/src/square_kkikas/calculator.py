@@ -91,7 +91,7 @@ class Calculator:
         sum_of_args = sum(self.args)
         return sum_of_args
 
-    def calculate_square_of_sum(self) -> float:
+    def calculate_square_of_sum(self) -> str:
         """
         Calculate square of sum of given arguments.
 
@@ -99,7 +99,7 @@ class Calculator:
         of the sum.
         """
         sum_of_args = self.calculate_sum()
-        square_of_sum = format(Decimal.from_float(math.pow(sum_of_args, self.power)), '.10')
+        square_of_sum = format(math.pow(Decimal.from_float(sum_of_args), self.power), '.10')
         return square_of_sum
 
 
