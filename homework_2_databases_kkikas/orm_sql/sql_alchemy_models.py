@@ -36,7 +36,6 @@ Available classes:
     -> Canteen class string representation.
     - def to_dict(self) -> dict:
     -> Cast the Canteen instance into a dictionary.
-
 """
 
 
@@ -71,6 +70,7 @@ class Provider(Base):
     - ProviderName - a string representing the name of the provider,
     - canteens - refers to related records in CANTEEN table
     """
+
     __tablename__ = "PROVIDER"
 
     ID: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
@@ -111,6 +111,7 @@ class Provider(Base):
         :param:
         :return dictionary with most needed attributes and their values
         """
+
         output = {
             "ID": self.ID,
             "ProviderName": self.ProviderName,
@@ -147,6 +148,7 @@ class Canteen(Base):
     - time_closed - an integer representing the closing time of the canteen,
     - provider - refers to related record in PROVIDER table
     """
+
     __tablename__ = "CANTEEN"
     ID: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
     ProviderID: Mapped[int] = mapped_column(
@@ -160,6 +162,7 @@ class Canteen(Base):
 
     def __repr__(self) -> str:
         """Canteen class string representation."""
+
         output_string = f"\nID: {self.ID}," + \
             "\nprovider:" + \
             f"\n    ProviderID: {self.ProviderID}," + \
@@ -194,6 +197,7 @@ class Canteen(Base):
         :param:
         :return dictionary with most needed attributes and their values
         """
+
         output = {
             "ID": self.ID,
             "ProviderID": self.ProviderID,

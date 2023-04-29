@@ -37,8 +37,8 @@ Available functions:
     -> Deletes PROVIDER datatable from database.
 - def close_connection(connection: sqlite3.Connection) -> None:
     Closes sqlite database connection.
-
 """
+
 
 import sqlite3
 
@@ -51,6 +51,7 @@ def open_connection(d_base="DINERS.db") -> sqlite3.Connection:
         defaults to "DINERS.db"
     :return: Connection to the database
     """
+
     try:
         connection = sqlite3.connect(d_base)
         print("Database opened successfully")
@@ -72,6 +73,7 @@ def create_provider(connection: sqlite3.Connection) -> None:
     :param connection: connection to the database
     :return None
     """
+
     try:
         connection.execute("""CREATE TABLE IF NOT EXISTS PROVIDER
             (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -103,6 +105,7 @@ def create_canteen(connection: sqlite3.Connection) -> None:
     :param connection: connection to the database
     :return None
     """
+
     try:
         connection.execute("""CREATE TABLE IF NOT EXISTS CANTEEN
             (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -133,8 +136,9 @@ def insert_one_record(connection: sqlite3.Connection, rec: dict) -> dict:
 
     :param connection: connection to the database
     :param rec: record to be inserted as dictionary
-    :return: Dictionary with data inserted 
+    :return: Dictionary with data inserted
     """
+
     keys = ["ID", "ProviderID", "Name",
             "Location", "time_open", "time_closed"]
     try:
@@ -184,8 +188,9 @@ def insert_records_in_bulk(connection: sqlite3.Connection, diners: list) -> list
     :param connection: connection to the database
     :param diners: list of records as dictionaries to be
         inserted into database
-    :return: List of dictionaries with inserted data    
+    :return: List of dictionaries with inserted data
     """
+
     try:
         cursor = connection.cursor()
         keys = ["ID", "ProviderID", "Name",
@@ -241,8 +246,9 @@ def query_all_records(connection: sqlite3.Connection, table: str) -> list | None
     :return list of records as dictionaries with keys
         "ID", "ProviderID", "Name", "Location", "time_open",
         "time_closed", "ProviderID", "ProviderName"
-        or None in case of an undefined query. 
+        or None in case of an undefined query.
     """
+
     try:
         keys = ["ID", "ProviderID", "Name", "Location", "time_open",
                 "time_closed", "ProviderID", "ProviderName"]
@@ -286,6 +292,7 @@ def query_open_between_inclusive(connection: sqlite3.Connection,
     :return list of tuples containing canteen name, opening time and
         closing time
     """
+
     try:
         cursor = connection.cursor()
         cursor.execute(
@@ -323,6 +330,7 @@ def query_canteens_serviced_by(connection: sqlite3.Connection, provider: str) ->
     :param provider: provider servicing canteens
     :return list of canteen names
     """
+
     try:
         cursor = connection.cursor()
         cursor.execute(
@@ -377,6 +385,7 @@ def close_connection(connection: sqlite3.Connection) -> None:
     :param connection: connection to the database
     :return
     """
+
     connection.close()
     print("Database connection successfully closed.")
 
