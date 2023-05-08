@@ -74,11 +74,7 @@ For more convenient use
 
 Then copy or clone the code from [plain_sql](https://github.com/devKarin/advanced-python/tree/sql/homework_2_databases_kkikas/plain_sql)
 To run this program it is needed to install `SQLite3`.<br>
-```bash
 
-pip install SQLAlchemy 
-
-```
 From terminal navigate to the directory containing `sql_connect.py` file and run it.<br>
 For Windows terminal the command would be:
 
@@ -99,12 +95,12 @@ To run this program it is needed to install `SQLAlchemy`.<br>
 pip install SQLAlchemy 
 
 ```
-From terminal navigate to the directory containing `sql_connect.py` file and run it.<br>
+From terminal navigate to the directory containing `sql_alchemy_queries.py` file and run it.<br>
 For Windows terminal the command would be:
 
 ```bash
 
-python sql_connect.py
+python sql_alchemy_queries.py
 
 ```
 Results of example queries will be printed into the terminal.
