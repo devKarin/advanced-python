@@ -63,12 +63,48 @@ Hints:<br>
 
 
 ## Running the application
-To run this program
+This application assumes to have Python 3.10 or later to be installed.
+To run the application, follow the instructions whether<br>
++ in section [Solution using plain SQL](https://github.com/devKarin/advanced-python/tree/sql/homework_2_databases_kkikas#solution-using-plain-sql) or
++ in section [Solution using `SQLAlchemy`](https://github.com/devKarin/advanced-python/tree/sql/homework_2_databases_kkikas#solution-using-sqlalchemy)
+<br>
+For more convenient use  
 
 ### Solution using plain SQL
 
-[sql_connect.py](address)
+Then copy or clone the code from [plain_sql](https://github.com/devKarin/advanced-python/tree/sql/homework_2_databases_kkikas/plain_sql)
+To run this program it is needed to install `SQLite3`.<br>
+```bash
+
+pip install SQLAlchemy 
+
+```
+From terminal navigate to the directory containing `sql_connect.py` file and run it.<br>
+For Windows terminal the command would be:
+
+```bash
+
+python sql_connect.py
+
+```
+Results of example queries will be printed into the terminal.
+
 
 ### Solution using `SQLAlchemy`
 
-[sqlAlchemyEngine.py](address)
+Then copy or clone the code from [orm_sql](https://github.com/devKarin/advanced-python/tree/sql/homework_2_databases_kkikas/orm_sql)
+To run this program it is needed to install `SQLAlchemy`.<br>
+```bash
+
+pip install SQLAlchemy 
+
+```
+From terminal navigate to the directory containing `sql_connect.py` file and run it.<br>
+For Windows terminal the command would be:
+
+```bash
+
+python sql_connect.py
+
+```
+Results of example queries will be printed into the terminal.

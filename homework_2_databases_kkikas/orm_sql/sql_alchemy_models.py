@@ -2,16 +2,15 @@
 This module defines database schema for SQLite
 database using SQLAlchemy ORM approach.
 
-Available variables:
-- engine - sqlite database engine
-
 Available classes:
 - class Base(DeclarativeBase):
-    -> Declarative base class for declarative mapping.; no methods available
+    -> Declarative base class for declarative mapping.;
+    no methods available
 - class Provider(Base):
     -> ORM Mapped Provider class.
     Provider class has following class attributes:
-    - __tablename__ - attribute referring to Table object instance name.
+    - __tablename__ - attribute referring to Table object
+    instance name.
     - ID - primary key for Provider,
     - ProviderName - name of the provider,
     - canteens - related records in CANTEEN table
@@ -23,7 +22,8 @@ Available classes:
 - class Canteen(Base):
     -> ORM Mapped Canteen class.
     Canteen class has following class attributes:
-    - __tablename__ - attribute referring to Table object instance name.
+    - __tablename__ - attribute referring to Table object
+    instance name.
     - ID - primary key for Canteen,
     - ProviderID - foreign key referring to ID in PROVIDER table,
     - Name - the name of the Canteen instance,
@@ -38,13 +38,11 @@ Available classes:
     -> Cast the Canteen instance into a dictionary.
 """
 
-
 from typing import Optional, List
 
-from sqlalchemy import create_engine, String, Integer, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-engine = create_engine("sqlite+pysqlite:///ALCHEMYDINERS.db", echo=False)
+from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, \
+    mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -63,17 +61,29 @@ class Provider(Base):
 
     Provider class refers to a Table object 
     named by __tablename__ attribute.
+
+    Attributes
+    ----------
     Table is available via __table_ attribute.
 
     Other attributes Provider class has:
     - ID type of integer acting as a primary key for Provider,
     - ProviderName - a string representing the name of the provider,
     - canteens - refers to related records in CANTEEN table
+
+    Methods
+    -------
+    __repr__(self) -> str:
+        Returns a string containing provider ID and ProviderName.
+    to_dict(self) -> dict:
+        Casts Provider instance into a dictionary where the keys
+        are provider instance attributes.
     """
 
     __tablename__ = "PROVIDER"
 
-    ID: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    ID: Mapped[int] = mapped_column(primary_key=True,
+                                    autoincrement="auto")
     ProviderName: Mapped[str] = mapped_column(String, unique=True)
     canteens: Mapped[List["Canteen"]] = relationship(
         back_populates="provider", cascade="all, delete-orphan")
@@ -86,10 +96,11 @@ class Provider(Base):
         """
         Cast the Provider instance into a dictionary.
 
-        Casts Provider instance into a dictionary where the keys are most
-        commonly used attributes.
-        This method can be useful when the built-in __dict__ method can not
-        be used (for example session-related issues in SQLAlchemy ORM).
+        Casts Provider instance into a dictionary where the 
+        keys are most commonly used attributes.
+        This method can be useful when the built-in __dict__ method
+        can not be used
+        (for example session-related issues in SQLAlchemy ORM).
 
         Structure:
         {
@@ -136,21 +147,39 @@ class Canteen(Base):
 
     Canteen class refers to a Table object 
     named by __tablename__ attribute.
+
+    Attributes
+    ----------
     Table is available via __table_ attribute.
 
     Other attributes Canteen class has:
-    - ID, non-nullable, type of integer acting as a primary key for Canteen,
+    - ID, non-nullable, type of integer acting as a primary key
+    for Canteen,
     - ProviderID, non-nullable, type of integer acting as a foreign key
     and referring to ID in PROVIDER table,
-    - Name - a non-nullable string representing the name of the canteen,
+    - Name - a non-nullable string representing the name of the
+    canteen,
     - Location - a string representing the address of the canteen,
-    - time_open - an integer representing the opening time of the canteen,
-    - time_closed - an integer representing the closing time of the canteen,
+    - time_open - an integer representing the opening time of the
+    canteen,
+    - time_closed - an integer representing the closing time of the
+    canteen,
     - provider - refers to related record in PROVIDER table
+
+    Methods
+    -------
+    __repr__(self) -> str:
+        Returns a string containing canteen ID, provider ID,
+        ProviderName, canteen Name, canteen Location,
+        canteen opening and closing time.
+    to_dict(self) -> dict:
+        Casts Canteen instance into a dictionary where the keys
+        are canteen instance attributes.
     """
 
     __tablename__ = "CANTEEN"
-    ID: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    ID: Mapped[int] = mapped_column(primary_key=True,
+                                    autoincrement="auto")
     ProviderID: Mapped[int] = mapped_column(
         ForeignKey("PROVIDER.ID"))
     Name: Mapped[str] = mapped_column(String)
@@ -178,8 +207,9 @@ class Canteen(Base):
 
         Casts Canteen instance into a dictionary where the keys are most
         commonly used attributes.
-        This method can be useful when the built-in __dict__ method can not
-        be used (for example session-related issues in SQLAlchemy ORM).
+        This method can be useful when the built-in __dict__ method
+        can not be used
+        (for example session-related issues in SQLAlchemy ORM).
         Structure:
         {
             "ID": self.ID,

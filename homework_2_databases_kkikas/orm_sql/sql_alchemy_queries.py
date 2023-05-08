@@ -2,6 +2,20 @@
 This module contains queries to conduct against 
 ALCHEMYDINERS database using SQLAlchemy ORM approach.
 
+This module assumes that Provider, Canteen and Base classes are
+described in sql_alchemy_models.py file and SQLite3 and
+SQLAlchemy is installed.
+In case exceptions text about the action not conducted will be
+printed and all exeptions are forwarded as general exeptions.
+
+Error and edge case handling is incomplete at the moment.
+
+For running examples and printing results into console,
+run this file from command line.
+
+Available variables:
+- engine - sqlite database engine
+
 Available functions:
 - def create_provider_table():
     -> Creates table PROVIDER into ALCHEMYDINERS database 
@@ -21,11 +35,14 @@ Available functions:
 - def query_all_records(table: str) -> list | None:
     -> Selects all records from given table and returns
     them as a list of dictionaries.
-- def select_open_between_inclusive(time_open: int, time_closed: int) -> list:
-    -> Queries records for canteens which are open within given timeframe.
+- def select_open_between_inclusive(time_open: int,
+    time_closed: int) -> list:
+    -> Queries records for canteens which are open within
+    given timeframe.
 - def query_canteens_serviced_by(provider_to_query: str) -> list:
     -> Queries canteens serviced by given provider.
-- def update_one(table: str, item_id: int, new_info: dict) -> dict | None:
+- def update_one(table: str, item_id: int,
+    new_info: dict) -> dict | None:
     -> Updates one record in database table.
 - def update_many(table: str, new_info: list) -> list | None:
     -> Updates multiple records simultaneously in given database table.
@@ -41,10 +58,13 @@ Available functions:
     -> Deletes all tables from ALCHEMYDINERS database.
 """
 
-from sqlalchemy import insert, select, update, delete
+from sqlalchemy import create_engine, insert, select, update, delete
 from sqlalchemy.orm import Session
 
-from sql_alchemy_models import Provider, Canteen, Base, engine
+from sql_alchemy_models import Provider, Canteen, Base
+
+engine = create_engine("sqlite+pysqlite:///ALCHEMYDINERS.db",
+                       echo=False)
 
 
 def create_provider_table():
@@ -145,10 +165,15 @@ def add_multiple_records(diners: list) -> list:
     Note:
     - In case there are case-wise multiple versions of a provider, the
     last in list will be inserted.
-    - In case there are case-wise multiple versions of a canteen's name,
-    they all are considered different and will be inserted as different records.
-    - Matching Provider od Canteens already in db will not be inserted twice
-    :param diners: list of dictionaries of a canteens to be inserted into a database
+    - In case there are case-wise multiple versions of a
+    canteen's name, they all are considered different and will be
+    inserted as different records.
+    - Matching Provider od Canteens already in db will not be
+        inserted twice
+
+    :param diners: list of dictionaries of a canteens to be inserted
+        into a database
+
     :return list of Canteen instances as dictionaries
     """
 
@@ -160,16 +185,18 @@ def add_multiple_records(diners: list) -> list:
             {"ProviderName": provider} for provider in unique_providers.values())
 
         # First add providers.
-        # add_all method checks first the database and then adds distinct records.
+        # add_all method checks first the database and then
+        # adds distinct records.
         # add_all does not merge duplicates currently already added or
         # to be added into session
         # that is why only unique provider names were filtered first
         session.add_all([Provider(
-            ProviderName=provider["ProviderName"]) for provider in provider_names_to_insert])
+            ProviderName=provider["ProviderName"]) for provider
+            in provider_names_to_insert])
         session.flush()
 
-        # Alter the input by adding "ProviderID" key and select clause as its value
-        # to retrieve provider info from db.
+        # Alter the input by adding "ProviderID" key and select
+        # clause as its value to retrieve provider info from db.
         # After that remove redundant keys which may trigger errors.
         for diner in diners:
             diner["ProviderID"] = select(Provider.ID).where(
@@ -182,7 +209,8 @@ def add_multiple_records(diners: list) -> list:
             insert(Canteen).values(diners).returning(Canteen),
             execution_options={"populate_existing": True})
         # Iterating over canteens_added will clear them from session.
-        # In order to use them multiple times, helper variable can be used.
+        # In order to use them multiple times, helper variable
+        # can be used.
         result = list(canteens_added)
         result_to_return = [item.to_dict() for item in result]
         print(f"Canteens added:\n{result}")
@@ -223,12 +251,14 @@ def query_all_records(table: str) -> list | None:
         raise expt
 
 
-def select_open_between_inclusive(time_open: int, time_closed: int) -> list:
+def select_open_between_inclusive(time_open: int,
+                                  time_closed: int) -> list:
     """
     Query records for canteens which are open within given timeframe.
 
     Queries from database table CANTEEN for canteens which are opened
-    within given timeframe, prints out the names, open and closing times of
+    within given timeframe, prints out the names,
+    open and closing times of
     items found and returns a list of dictionaries with following keys:
     - "ID"
     - "ProviderID"
@@ -247,7 +277,8 @@ def select_open_between_inclusive(time_open: int, time_closed: int) -> list:
     """
 
     query = select(Canteen).filter(Canteen.time_open <=
-                                   time_open, Canteen.time_closed >= time_closed)
+                                   time_open,
+                                   Canteen.time_closed >= time_closed)
 
     results = session.execute(query)
     print("Canteens open from ", end="")
@@ -338,11 +369,12 @@ def update_many(table: str, new_info: list) -> list | None:
     Updates several records in one database table with new values given
     as a list of dictionaries.
     Note:
-    - It is mandatory for dictionaries passed as arguments to contain record ID-s
-    to target the records to update.
+    - It is mandatory for dictionaries passed as arguments to
+    contain record ID-s to target the records to update.
 
     :param table: database table to update
-    :param new_info: list of dictionaries containing id-s and new info for records
+    :param new_info: list of dictionaries containing
+        id-s and new info for records
     :return list of updated records as a dictionaries
     """
 
@@ -389,7 +421,8 @@ def delete_one(table: str, item_id: int) -> dict | None:
                 print(f"Could not find table {table}")
                 return None
         result = session.execute(delete(table_to_delete_from).where(
-            table_to_delete_from.ID == item_id).returning(table_to_delete_from)).scalars().one()
+            table_to_delete_from.ID ==
+            item_id).returning(table_to_delete_from)).scalars().one()
         print(f"Record deleted from table {table} is:\n{result}")
         return result.to_dict()
     except Exception as expt:
@@ -402,7 +435,8 @@ def delete_many(table: str, item_ids: list) -> list | None:
     Delete several records simultaneously from database table.
 
     Deletes many records from given database table based on
-    ID-s passed as a list and returns deleted items as a list of dictionaries.
+    ID-s passed as a list and returns deleted items as a
+    list of dictionaries.
 
     :param table: database table to delete from
     :param item_ids: list of ID-s of the records to be deleted
@@ -419,7 +453,8 @@ def delete_many(table: str, item_ids: list) -> list | None:
                 print(f"Could not find table {table}")
                 return None
         result = session.execute(delete(table_to_delete_from).where(
-            table_to_delete_from.ID.in_(item_ids)).returning(table_to_delete_from))
+            table_to_delete_from.ID.in_(
+                item_ids)).returning(table_to_delete_from))
         result_list = result.scalars().all()
         print(f"Records deleted from table {table} are:\n{result_list}")
         return [result.to_dict() for result in result_list]
@@ -531,6 +566,11 @@ if __name__ == "__main__":
     create_provider_table()
     create_canteen_table()
     print("--*--" * 10)
+
+    # All function calls besides creating and dropping tables
+    # must be made within session context.
+    # Following code includes multiples samples you can uncomment
+    # to try out the code.
     with Session(engine) as session, session.begin():
         one_test_record = add_one_record(record)
         # print("TEST1:\n", one_test_record)
@@ -568,9 +608,10 @@ if __name__ == "__main__":
                          {"ID": 4, "ProviderName": "Kokapoiss"}])
         # print("TEST14:\n", update_several_providers[0]["ProviderName"])
         print("--*--" * 10)
-        update_several_canteens = update_many("CANTEEN", [{"ID": 3, "Name": "Tühi kõht"}, {
-                                              "ID": 6, "Name": "Kuus kaalikat"},
-            {"ID": 9, "Name": "Pontšik ja pool praadi"}])
+        update_several_canteens = update_many(
+            "CANTEEN", [{"ID": 3, "Name": "Tühi kõht"},
+                        {"ID": 6, "Name": "Kuus kaalikat"},
+                        {"ID": 9, "Name": "Pontšik ja pool praadi"}])
         # print("TEST15:\n", update_several_canteens[2]["Name"])
         print("--*--" * 10)
         # delete_one_provider = delete_one("PROVIDER", 4)
@@ -587,4 +628,6 @@ if __name__ == "__main__":
         print("X" * 40)
         print("*" * 40)
 
+    # Engine disposal after the program has finished.
+    # Do not delete this line.
     engine.dispose()

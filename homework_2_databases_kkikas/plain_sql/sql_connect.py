@@ -1,6 +1,15 @@
 """
 This module creates a database and provides actions on its tables.
 
+This module assumes that SQLite3 is installed.
+For running examples and printing results into console,
+run this file from command line.
+
+In case exceptions text about the action not conducted will be printed and
+all exeptions are forwarded as general exeptions.
+
+Error and edge case handling is incomplete at the moment.
+
 The database DINERS has two related tables CANTEEN and PROVIDER.
 Available functions:
 - def open_connection(d_base="DINERS.db") -> sqlite3.Connection:
@@ -24,9 +33,9 @@ Available functions:
     and returns them as a list of dictionaries.
 - def query_open_between_inclusive(connection: sqlite3.Connection, \
     time_open: int, time_closed: int) -> list:
-    -> Selects records for canteens which are open within given timeframe
-    from database and returns a list with canteen names matching criteria
-    and opening and closing time.
+    -> Selects records for canteens which are open within given
+    timeframe from database and returns a list with canteen
+    names matching criteria and opening and closing time.
 - def query_canteens_serviced_by(connection: sqlite3.Connection, \
     provider: str) -> list:
     -> Selects canteens serviced by given provider from database and
@@ -91,13 +100,16 @@ def create_canteen(connection: sqlite3.Connection) -> None:
     Create database table named CANTEEN.
 
     CANTEEN has following columns:\n
-    ID - non-nullable autoincrement integer, which acts as a primary key,
+    ID - non-nullable autoincrement integer, which acts as a 
+        primary key,
     ProviderID - an integer which acts as a foreign key and
     refers to ID column in PROVIDER table, 
     Name - non-nullable text,
     Location - text,
-    time-open - non-nullable integer indicating the canteen opening time,
-    time-closed - non-nullable integer indicating the canteen closing time.
+    time-open - non-nullable integer indicating the canteen 
+        opening time,
+    time-closed - non-nullable integer indicating the canteen 
+        closing time.
 
     On update of PROVIDER table the key changes propagate to CANTEEN
     table, on delete the values are set to be NULL.
@@ -109,7 +121,7 @@ def create_canteen(connection: sqlite3.Connection) -> None:
     try:
         connection.execute("""CREATE TABLE IF NOT EXISTS CANTEEN
             (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            ProviderID INT,
+            ProviderID INT NOT NULL,
             Name TEXT NOT NULL,
             Location TEXT,
             time_open INT NOT NULL,
@@ -132,7 +144,8 @@ def insert_one_record(connection: sqlite3.Connection, rec: dict) -> dict:
     Takes a dictionary with keys 
         "ProviderName", "Name", "Location", "time_open", "time_closed"
     as an argument and returns inserted data as dictionary with keys
-         "ID", "ProviderID", "Name", "Location", "time_open", "time_closed", "ProviderName".
+         "ID", "ProviderID", "Name", "Location",
+         "time_open", "time_closed", "ProviderName".
 
     :param connection: connection to the database
     :param rec: record to be inserted as dictionary
@@ -142,11 +155,20 @@ def insert_one_record(connection: sqlite3.Connection, rec: dict) -> dict:
     keys = ["ID", "ProviderID", "Name",
             "Location", "time_open", "time_closed"]
     try:
+        if not rec:
+            return {}
+        for key in keys:
+            if key not in rec:
+                rec[key] = ""
         connection.execute("""PRAGMA foreign_keys = ON;""")
-        provider_record = connection.execute("""INSERT INTO PROVIDER\
-                        (ProviderName)\
-                        VALUES\
-                        (:provider_name) RETURNING ProviderName;""", (rec["ProviderName"],))
+
+        provider_record = connection.execute("""INSERT OR REPLACE \
+            INTO PROVIDER\
+                (ProviderName)\
+                    VALUES\
+                        (:provider_name) \
+                            RETURNING ProviderName;""",
+                                             (rec["ProviderName"],))
         canteen_record = connection.execute("""INSERT INTO CANTEEN\
                         (ProviderID, Name, Location,\
                         time_open, time_closed)\
@@ -172,7 +194,8 @@ def insert_one_record(connection: sqlite3.Connection, rec: dict) -> dict:
     return result
 
 
-def insert_records_in_bulk(connection: sqlite3.Connection, diners: list) -> list:
+def insert_records_in_bulk(connection: sqlite3.Connection,
+                           diners: list) -> list:
     """
     Create records in CANTEEN and PROVIDER tables
     for canteens provided as list of dictionaries.
@@ -194,7 +217,19 @@ def insert_records_in_bulk(connection: sqlite3.Connection, diners: list) -> list
     try:
         cursor = connection.cursor()
         keys = ["ID", "ProviderID", "Name",
-                "Location", "time_open", "time_closed", "ProviderID", "ProviderName"]
+                "Location", "time_open", "time_closed",
+                "ProviderID", "ProviderName"]
+        if not diners:
+            return []
+        copy_of_diners = diners.copy()
+        for diner_index, diner in enumerate(diners):
+            if not diner:
+                copy_of_diners.pop(diner_index)
+                continue
+            for key in keys:
+                if key not in diner:
+                    copy_of_diners[diner_index][key] = ""
+        diners = copy_of_diners
         diner_names = [diner["Name"] for diner in diners]
         # Select unique providers, capitalisation doesn't matter.
         unique_providers = {provider["ProviderName"].casefold(
@@ -208,16 +243,20 @@ def insert_records_in_bulk(connection: sqlite3.Connection, diners: list) -> list
                 VALUES(:ProviderName);""", providers)
         # Insert new diners.
         cursor.executemany(
-            """INSERT INTO CANTEEN (\
+            """INSERT OR REPLACE \
+                INTO CANTEEN (\
                 ProviderID, Name, Location, time_open, time_closed) \
                     VALUES ((SELECT ID AS ProviderID FROM PROVIDER \
-                        WHERE ProviderName=:ProviderName COLLATE NOCASE), \
-                            :Name, :Location, :time_open, :time_closed);""",
+                        WHERE ProviderName=:ProviderName \
+                            COLLATE NOCASE), \
+                            :Name, :Location, :time_open, \
+                                :time_closed);""",
             diners)
 
         connection.commit()
         print("New records inserted:")
-        # Create dynamically the amount of placeholders into the query string.
+        # Create dynamically the amount of placeholders
+        # into the query string.
         query_string = f"SELECT * FROM CANTEEN LEFT JOIN PROVIDER \
             ON PROVIDER.ID=CANTEEN.ProviderID WHERE Name IN \
                 ({'?, ' * (len(diner_names)-1) + '?'})"
@@ -317,7 +356,8 @@ def query_open_between_inclusive(connection: sqlite3.Connection,
     return result
 
 
-def query_canteens_serviced_by(connection: sqlite3.Connection, provider: str) -> list:
+def query_canteens_serviced_by(connection: sqlite3.Connection,
+                               provider: str) -> list:
     """
     Query canteens serviced by given provider.
 
@@ -335,7 +375,8 @@ def query_canteens_serviced_by(connection: sqlite3.Connection, provider: str) ->
         cursor = connection.cursor()
         cursor.execute(
             """SELECT NAME FROM CANTEEN LEFT JOIN PROVIDER ON \
-                PROVIDER.ID=CANTEEN.ProviderID WHERE ProviderName=?;""", (provider,))
+                PROVIDER.ID=CANTEEN.ProviderID WHERE ProviderName=?;""",
+            (provider,))
         connection.commit()
         print(f"Canteens serviced by {provider} are:")
         result = [row[0] for row in cursor.fetchall()]
@@ -358,8 +399,7 @@ def drop_canteen(connection: sqlite3.Connection) -> None:
     :param connection: connection to the database
     :return
     """
-
-    connection.execute("""DROP TABLE CANTEEN""")
+    connection.execute("""DROP TABLE IF EXISTS CANTEEN""")
     print("Table CANTEEN deleted successfully.")
 
 
@@ -372,8 +412,7 @@ def drop_provider(connection: sqlite3.Connection) -> None:
     :param connection: connection to the database
     :return
     """
-
-    connection.execute("""DROP TABLE PROVIDER""")
+    connection.execute("""DROP TABLE IF EXISTS PROVIDER""")
     print("Table PROVIDER deleted successfully.")
 
 
@@ -398,6 +437,7 @@ if __name__ == "__main__":
         "time_open": 900,
         "time_closed": 1600
     }
+
     canteens = [
         {
             "ProviderName": "Rahva Toit",
